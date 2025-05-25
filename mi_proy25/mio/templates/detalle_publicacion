@@ -1,0 +1,41 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+<h1>DETALLE DE PUBLICACION</h1>
+ 
+<h2>{{ publicacion.titulo }}</h2>
+<p>Usuario: {{ publicacion.usuario.username }}</p>
+<p>publicacion: {{ publicacion.contenido}}</p>
+<p>fecha:{{ publicacion.fecha_creacion }}</p>
+<p>
+    <a href = " {% url 'editar_publicacion' publicacion.pk %}"> Editar </a> <br>    
+    <a href="{% url 'eliminar_publicacion' publicacion.pk %}"> Eliminar</a>
+</p>
+
+<ul>
+{% for comentario in comentarios %}
+    <li> usuario: {{ comentario.usuario.username}} <br>
+        comentario: {{ comentario.contenido}}<br>
+        fecha: {{comentario.fecha_creacion}}
+        <p></p>
+        {% if user == comentario.usuario %}
+        <p>
+            <a href="{% url "editar_comentario" comentario.pk %}"> Editar </a>
+        </p>
+    {% endif %}
+    </li>
+    
+{% endfor %}
+
+{% if user.is_authenticated %}
+    <h3>Agregar un comentario</h3>
+    <form method = "POST" action = "{% url 'agregar_comentario' publicacion.pk %}">
+        {% csrf_token %}
+        {{ form_comentario.as_p}}
+        <button type="submit">Guardar</button>
+        <button type="button">Cancelar</button>
+    </form>
+{% endif %}
+
+</ul>
+{% endblock  %}
